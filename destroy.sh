@@ -1,0 +1,1 @@
+kolla-ansible destroy -i all-in-one --yes-i-really-really-mean-it
