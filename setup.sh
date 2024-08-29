@@ -1,5 +1,7 @@
 #! /bin/bash
 
+GET_PWD="$(pwd)"
+
 sudo apt update
 
 sudo apt install git python3-dev libffi-dev gcc libssl-dev -y
@@ -25,8 +27,9 @@ sudo cp /usr/local/share/kolla-ansible/ansible/inventory/* /etc/kolla/
 kolla-ansible install-deps
 
 sleep 50
-
-echo "create ansible folder and create ansible.cfg file"
+echo "\033[1;34m ======================================================================"
+echo "\033[1;34m Create ansible folder and create ansible.cfg file"
+echo "\033[1;34m ======================================================================"
 
 sudo mkdir /etc/ansible
 sudo touch /etc/ansible/ansible.cfg
@@ -37,18 +40,21 @@ forks=100" | sudo tee /etc/ansible/ansible.cfg > /dev/null
 
 
 sleep 50
-
-echo "Running command kolla-genpwd"
+echo "\033[1;34m ======================================================================"
+echo "\033[1;34m Running command kolla-genpwd"
+echo "\033[1;34m ======================================================================"
 kolla-genpwd
 
 sleep 50
-
-echo "Config globals.yml file in /etc/kolla"
-cat sglobals.conf | sudo tee -a /etc/kolla/globals.yml > /dev/null
+echo "\033[1;34m ======================================================================"
+echo "\033[1;34m Config globals.yml file in /etc/kolla"
+echo "\033[1;34m ======================================================================"
+cat $GET_PWD/sglobals.conf | sudo tee -a /etc/kolla/globals.yml > /dev/null
 
 sleep 50
-
-echo "======== Bootstrap-servers ======== Prechecks ========= Deploy ========="
+echo "\033[1;34m ========================================================================"
+echo "\033[1;34m ======== Bootstrap-servers ======== Prechecks ========= Deploy ========="
+echo "\033[1;34m ========================================================================"
 cd /etc/kolla
 kolla-ansible -i ./all-in-one bootstrap-servers &
 wait
@@ -58,11 +64,14 @@ kolla-ansible -i ./all-in-one deploy &
 wait
 
 sleep 50
-
-echo "Download Openstack"
+echo "\033[1;34m ======================================================================"
+echo "\033[1;34m Download Openstack"
+echo "\033[1;34m ======================================================================"
 pip3 install python-openstackclient -c https://releases.openstack.org/constraints/upper/master
 
-echo "Deploy Openstack"
+echo "\033[1;34m ======================================================================"
+echo "\033[1;34m Deploy Openstack"
+echo "\033[1;34m ======================================================================"
 kolla-ansible post-deploy
 
 cat /etc/kolla/admin-openrc.sh
