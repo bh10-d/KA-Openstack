@@ -24,19 +24,31 @@ sudo cp /usr/local/share/kolla-ansible/ansible/inventory/* /etc/kolla/
 
 kolla-ansible install-deps
 
+sleep 50
+
+echo "create ansible folder and create ansible.cfg file"
+
 sudo mkdir /etc/ansible
-
 sudo touch /etc/ansible/ansible.cfg
-
-echo "
-[defaults]
+echo "[defaults]
 host_key_checking=False
 pipelining=True
 forks=100" | sudo tee /etc/ansible/ansible.cfg > /dev/null
 
+
+sleep 50
+
+echo "Running command kolla-genpwd"
 kolla-genpwd
 
-cat sglobals.conf | sudo tee /etc/kolla/globals.yml >> /dev/null
+sleep 50
+
+echo "Config globals.yml file in /etc/kolla"
+cat sglobals.conf | sudo tee -a /etc/kolla/globals.yml > /dev/null
+
+sleep 50
+
+echo "======== Bootstrap-servers ======== Prechecks ========= Deploy ========="
 cd /etc/kolla
 kolla-ansible -i ./all-in-one bootstrap-servers &
 wait
@@ -45,8 +57,12 @@ wait
 kolla-ansible -i ./all-in-one deploy &
 wait
 
+sleep 50
+
+echo "Download Openstack"
 pip3 install python-openstackclient -c https://releases.openstack.org/constraints/upper/master
 
+echo "Deploy Openstack"
 kolla-ansible post-deploy
 
 cat /etc/kolla/admin-openrc.sh
