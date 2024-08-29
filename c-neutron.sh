@@ -6,9 +6,9 @@ DEMO_NET_DNS=${DEMO_NET_DNS:-'8.8.8.8'}
 
 # This EXT_NET_CIDR is your public network,that you want to connect to the internet via.
 ENABLE_EXT_NET=${ENABLE_EXT_NET:-1}
-EXT_NET_CIDR=${EXT_NET_CIDR:-'10.0.2.0/24'}
-EXT_NET_RANGE=${EXT_NET_RANGE:-'start=10.0.2.150,end=10.0.2.199'}
-EXT_NET_GATEWAY=${EXT_NET_GATEWAY:-'10.0.2.1'}
+EXT_NET_CIDR=${EXT_NET_CIDR:-'191.168.101.0/24'}
+EXT_NET_RANGE=${EXT_NET_RANGE:-'start=191.168.101.240,end=191.168.101.250'}
+EXT_NET_GATEWAY=${EXT_NET_GATEWAY:-'192.168.101.1'}
 
 
 echo Configuring neutron.

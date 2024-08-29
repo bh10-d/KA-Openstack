@@ -2,8 +2,14 @@
 
 GET_PWD="$(pwd)"
 WOR_ANSIBLE="/etc/ansible"
+WOR_KOLLA="/etc/kolla"
 
 sudo apt update
+
+echo -e "\033[1;34m========================================================================"
+echo -e "\033[1;34mInstall dependencies"
+echo -e "\033[1;34m========================================================================"
+echo -e "\033[1;37m"
 
 sudo apt install git python3-dev libffi-dev gcc libssl-dev -y
 
@@ -14,6 +20,11 @@ sudo pip3 install -U pip
 sudo pip3 install 'ansible-core>=2.16,<2.17.99'
 
 sudo ln -s /usr/local/bin/ansible /usr/bin/ansible
+
+echo -e "\033[1;34m========================================================================"
+echo -e "\033[1;34mInstall Kolla-Ansible"
+echo -e "\033[1;34m========================================================================"
+echo -e "\033[1;37m"
 
 sudo pip3 install git+https://opendev.org/openstack/kolla-ansible@master
 
@@ -31,13 +42,7 @@ sleep 50
 echo -e "\033[1;34m========================================================================"
 echo -e "\033[1;34mCreate ansible folder and create ansible.cfg file"
 echo -e "\033[1;34m========================================================================"
-
-sudo mkdir /etc/ansible
-sudo touch /etc/ansible/ansible.cfg
-echo "[defaults]
-host_key_checking=False
-pipelining=True
-forks=100" | sudo tee /etc/ansible/ansible.cfg > /dev/null
+echo -e "\033[1;37m"
 
 
 if [ -d "$WOR_ANSIBLE" ]; then
@@ -74,35 +79,40 @@ sleep 50
 echo -e "\033[1;34m========================================================================"
 echo -e "\033[1;34mRunning command kolla-genpwd"
 echo -e "\033[1;34m========================================================================"
+echo -e "\033[1;37m"
 kolla-genpwd
 
 sleep 50
 echo -e "\033[1;34m========================================================================"
 echo -e "\033[1;34mConfig globals.yml file in /etc/kolla"
 echo -e "\033[1;34m========================================================================"
-cat $GET_PWD/sglobals.conf | sudo tee -a /etc/kolla/globals.yml > /dev/null
+echo -e "\033[1;37m"
+cat $GET_PWD/sglobals.conf | sudo tee -a $WOR_KOLLA/globals.yml > /dev/null
 
 sleep 50
 echo -e "\033[1;34m========================================================================"
 echo -e "\033[1;34m======== Bootstrap-servers ======== Prechecks ========= Deploy ========="
 echo -e "\033[1;34m========================================================================"
-cd /etc/kolla
-kolla-ansible -i ./all-in-one bootstrap-servers &
+echo -e "\033[1;37m"
+
+kolla-ansible -i /$WOR_KOLLA/all-in-one bootstrap-servers &
 wait
-kolla-ansible -i ./all-in-one prechecks &
+kolla-ansible -i /$WOR_KOLLA/all-in-one prechecks &
 wait
-kolla-ansible -i ./all-in-one deploy &
+kolla-ansible -i /$WOR_KOLLA/all-in-one deploy &
 wait
 
 sleep 50
 echo -e "\033[1;34m========================================================================"
 echo -e "\033[1;34mDownload Openstack"
 echo -e "\033[1;34m========================================================================"
+echo -e "\033[1;37m"
 pip3 install python-openstackclient -c https://releases.openstack.org/constraints/upper/master
 
 echo -e "\033[1;34m========================================================================"
 echo -e "\033[1;34mDeploy Openstack"
 echo -e "\033[1;34m========================================================================"
+echo -e "\033[1;37m"
 kolla-ansible post-deploy
 
-cat /etc/kolla/admin-openrc.sh
+cat $WOR_KOLLA/admin-openrc.sh
