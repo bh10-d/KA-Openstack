@@ -71,7 +71,6 @@ else
 host_key_checking=False
 pipelining=True
 forks=100" | sudo tee /etc/ansible/ansible.cfg > /dev/null
-  exit 1
 fi
 
 
